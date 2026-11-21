@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>NoGemini</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--card:#e4e6eb;--ink:#1b1d26;--mute:#555a68;--line:#b7bbc7;--in:#f3f4f7;--ok:#15803d;--warn:#b45309;--bad:#b91c1c}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--card:#2b2e38;--ink:#eef0f6;--mute:#a7acba;--line:#474b5b;--in:#21242c;--ok:#4ade80;--warn:#fbbf24;--bad:#f87171}}
+:root[data-theme="dark"]{--card:#2b2e38;--ink:#eef0f6;--mute:#a7acba;--line:#474b5b;--in:#21242c;--ok:#4ade80;--warn:#fbbf24;--bad:#f87171}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;min-height:100vh;display:grid;place-items:center;padding:20px 14px;font-family:"Segoe UI",system-ui,-apple-system,Roboto,sans-serif;color:var(--ink);background:#7c3aed linear-gradient(135deg,#1d4ed8 0%,#4f6bff 22%,#8c90a0 50%,#9a5cf6 78%,#6d28d9 100%) fixed}
+.card{width:100%;max-width:640px;background:var(--card);border-radius:24px;padding:26px;box-shadow:0 24px 60px rgba(20,10,70,.35);border:1px solid rgba(255,255,255,.25)}
+header{display:flex;justify-content:space-between;align-items:center;gap:12px}
+h1{margin:0;font-size:2rem;letter-spacing:-.03em;font-weight:800;background:linear-gradient(90deg,#2563eb,#7c3aed);-webkit-background-clip:text;background-clip:text;color:transparent}
+select{background:var(--in);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:8px 10px;font:inherit;font-size:.9rem}
+#sub{color:var(--mute);margin:6px 0 18px;line-height:1.45}
+.tabs{display:flex;gap:6px;background:var(--in);padding:5px;border-radius:14px;border:1px solid var(--line)}
+.tabs button{flex:1;border:0;background:none;color:var(--mute);padding:10px;border-radius:10px;font:inherit;font-weight:600;cursor:pointer}
+.tabs button[aria-selected="true"]{background:linear-gradient(90deg,#2563eb,#7c3aed);color:#fff}
+.tabs button:focus-visible,select:focus-visible,.go:focus-visible,textarea:focus-visible,#dz:focus-within{outline:3px solid #7c3aed;outline-offset:2px}
+textarea{width:100%;height:190px;margin-top:14px;background:var(--in);color:var(--ink);border:1px solid var(--line);border-radius:14px;padding:14px;font:inherit;line-height:1.5;resize:vertical}
+#dz{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;margin-top:14px;min-height:190px;border:2px dashed var(--line);border-radius:14px;background:var(--in);color:var(--mute);text-align:center;padding:16px;cursor:pointer}
+#dz.over{border-color:#7c3aed}
+#dz[hidden],textarea[hidden],#res[hidden]{display:none}
+#pv img,#pv video{max-width:100%;max-height:240px;border-radius:10px}
+.row{display:flex;gap:10px;margin-top:14px}
+.go{flex:1;border:0;border-radius:12px;padding:13px;font:inherit;font-weight:700;color:#fff;background:linear-gradient(90deg,#2563eb,#7c3aed);cursor:pointer}
+.go.g{flex:0 0 auto;background:var(--in);color:var(--ink);border:1px solid var(--line);padding:13px 18px}
+.go:disabled{opacity:.6;cursor:wait}
+#res{margin-top:20px;padding-top:18px;border-top:1px solid var(--line)}
+#lab{color:var(--mute);font-size:.9rem}
+#pct{font-size:3.6rem;font-weight:800;letter-spacing:-.04em;line-height:1}
+#vd{font-weight:700;margin:4px 0 12px}
+.bar{position:relative;height:12px;border-radius:99px;background:linear-gradient(90deg,#22c55e,#eab308,#ef4444)}
+#mk{position:absolute;top:-5px;width:6px;height:22px;border-radius:4px;background:var(--ink);border:2px solid var(--card);transform:translateX(-50%);transition:left .6s}
+ul{list-style:none;padding:0;margin:16px 0 0;display:grid;gap:8px}
+li{display:grid;grid-template-columns:1fr 90px;gap:10px;align-items:center;font-size:.9rem}
+li i{display:block;height:6px;border-radius:9px;background:var(--line);overflow:hidden}
+li b{display:block;height:100%;background:linear-gradient(90deg,#2563eb,#7c3aed)}
+li.h b{background:var(--ok)}
+#ds{display:block;margin-top:16px;color:var(--mute);font-size:.8rem;line-height:1.4}
+@media (prefers-reduced-motion:reduce){#mk{transition:none}}
+</style>
+</head>
+<body>
+<main class="card">
+<header><h1>NoGemini</h1><select id="lg" aria-label="Language"></select></header>
+<p id="sub"></p>
+<div class="tabs" role="tablist"><button role="tab" data-m="t"></button><button role="tab" data-m="i"></button><button role="tab" data-m="v"></button></div>
+<textarea id="tx"></textarea>
+<label id="dz" hidden><input type="file" id="fi" hidden><span id="dt"></span><div id="pv"></div></label>
+<div class="row"><button class="go" id="go"></button><button class="go g" id="cl"></button></div>
+<section id="res" hidden>
+<div id="lab"></div><div id="pct"></div><div id="vd"></div>
+<div class="bar"><div id="mk"></div></div>
+<ul id="sg"></ul>
+</section>
+<small id="ds"></small>
+</main>
+<script>
+const L={
+en:{n:"English",sub:"Detects AI-made text, images and video, whatever AI created them",t:"Text",i:"Image",v:"Video",ph:"Paste the text you want to check (at least 40 words)…",drop:"Drop a file here or tap to choose",go:"Analyze",cl:"Clear",lab:"Probability of being AI",H:"Likely human-made",U:"Inconclusive",A:"Likely AI-generated",ds:"This is an estimate from local heuristics and can be wrong. Nothing is uploaded: everything runs in your browser.",short:"Please enter at least 40 words.",wait:"Analyzing…",sN:"Unnaturally smooth texture",sB:"Uniform sentence rhythm",sP:"Typical AI phrasing",sU:"Uniform paragraphs",sI:"Informal human traits",sD:"Typical AI dimensions",sM:"AI signature in metadata",sC:"Camera data present",sT:"Short clip length",err:"Could not read this file."},
+es:{n:"Español",sub:"Detecta texto, imágenes y videos hechos con IA, sin importar qué IA los creó",t:"Texto",i:"Imagen",v:"Video",ph:"Pega el texto que quieres revisar (mínimo 40 palabras)…",drop:"Suelta un archivo aquí o toca para elegir",go:"Analizar",cl:"Limpiar",lab:"Probabilidad de ser IA",H:"Probablemente humano",U:"No concluyente",A:"Probablemente generado por IA",ds:"Es una estimación con heurísticas locales y puede fallar. No se sube nada: todo corre en tu navegador.",short:"Escribe al menos 40 palabras.",wait:"Analizando…",sN:"Textura sospechosamente lisa",sB:"Ritmo de frases uniforme",sP:"Frases típicas de IA",sU:"Párrafos uniformes",sI:"Rasgos informales humanos",sD:"Dimensiones típicas de IA",sM:"Firma de IA en metadatos",sC:"Datos de cámara presentes",sT:"Clip muy corto",err:"No se pudo leer el archivo."},
+pt:{n:"Português",sub:"Detecta texto, imagens e vídeos feitos com IA, não importa qual IA os criou",t:"Texto",i:"Imagem",v:"Vídeo",ph:"Cole o texto que deseja verificar (mínimo 40 palavras)…",drop:"Solte um arquivo aqui ou toque para escolher",go:"Analisar",cl:"Limpar",lab:"Probabilidade de ser IA",H:"Provavelmente humano",U:"Inconclusivo",A:"Provavelmente gerado por IA",ds:"É uma estimativa com heurísticas locais e pode errar. Nada é enviado: tudo roda no seu navegador.",short:"Digite pelo menos 40 palavras.",wait:"Analisando…",sN:"Textura suspeitamente lisa",sB:"Ritmo de frases uniforme",sP:"Frases típicas de IA",sU:"Parágrafos uniformes",sI:"Traços informais humanos",sD:"Dimensões típicas de IA",sM:"Assinatura de IA nos metadados",sC:"Dados de câmera presentes",sT:"Clipe muito curto",err:"Não foi possível ler o arquivo."},
+fr:{n:"Français",sub:"Détecte les textes, images et vidéos créés par IA, quelle que soit l’IA utilisée",t:"Texte",i:"Image",v:"Vidéo",ph:"Collez le texte à vérifier (40 mots minimum)…",drop:"Déposez un fichier ici ou touchez pour choisir",go:"Analyser",cl:"Effacer",lab:"Probabilité d’être une IA",H:"Probablement humain",U:"Non concluant",A:"Probablement généré par IA",ds:"Estimation basée sur des heuristiques locales, elle peut se tromper. Rien n’est envoyé : tout s’exécute dans votre navigateur.",short:"Saisissez au moins 40 mots.",wait:"Analyse…",sN:"Texture anormalement lisse",sB:"Rythme de phrases uniforme",sP:"Tournures typiques d’IA",sU:"Paragraphes uniformes",sI:"Traits informels humains",sD:"Dimensions typiques d’IA",sM:"Signature d’IA dans les métadonnées",sC:"Données d’appareil photo présentes",sT:"Clip très court",err:"Impossible de lire ce fichier."},
+de:{n:"Deutsch",sub:"Erkennt KI-erstellte Texte, Bilder und Videos, egal welche KI sie erzeugt hat",t:"Text",i:"Bild",v:"Video",ph:"Text zum Prüfen einfügen (mindestens 40 Wörter)…",drop:"Datei hierher ziehen oder tippen zum Auswählen",go:"Analysieren",cl:"Leeren",lab:"Wahrscheinlichkeit für KI",H:"Wahrscheinlich menschlich",U:"Nicht eindeutig",A:"Wahrscheinlich KI-generiert",ds:"Schätzung auf Basis lokaler Heuristiken, kann falsch sein. Nichts wird hochgeladen: alles läuft in deinem Browser.",short:"Bitte mindestens 40 Wörter eingeben.",wait:"Analysiere…",sN:"Auffällig glatte Textur",sB:"Gleichmäßiger Satzrhythmus",sP:"Typische KI-Formulierungen",sU:"Gleichförmige Absätze",sI:"Informelle menschliche Merkmale",sD:"Typische KI-Abmessungen",sM:"KI-Signatur in Metadaten",sC:"Kameradaten vorhanden",sT:"Sehr kurzer Clip",err:"Datei konnte nicht gelesen werden."},
+it:{n:"Italiano",sub:"Rileva testi, immagini e video creati con IA, indipendentemente da quale IA li abbia generati",t:"Testo",i:"Immagine",v:"Video",ph:"Incolla il testo da controllare (almeno 40 parole)…",drop:"Trascina un file qui o tocca per sceglierlo",go:"Analizza",cl:"Pulisci",lab:"Probabilità che sia IA",H:"Probabilmente umano",U:"Non conclusivo",A:"Probabilmente generato da IA",ds:"È una stima basata su euristiche locali e può sbagliare. Non viene caricato nulla: tutto gira nel tuo browser.",short:"Inserisci almeno 40 parole.",wait:"Analisi in corso…",sN:"Texture sospettosamente liscia",sB:"Ritmo delle frasi uniforme",sP:"Formule tipiche dell’IA",sU:"Paragrafi uniformi",sI:"Tratti informali umani",sD:"Dimensioni tipiche dell’IA",sM:"Firma IA nei metadati",sC:"Dati della fotocamera presenti",sT:"Clip molto breve",err:"Impossibile leggere il file."},
+ru:{n:"Русский",sub:"Определяет тексты, изображения и видео, созданные ИИ, независимо от того, какой ИИ их сделал",t:"Текст",i:"Изображение",v:"Видео",ph:"Вставьте текст для проверки (минимум 40 слов)…",drop:"Перетащите файл сюда или нажмите для выбора",go:"Проверить",cl:"Очистить",lab:"Вероятность, что это ИИ",H:"Скорее всего, человек",U:"Неопределённо",A:"Скорее всего, создано ИИ",ds:"Это оценка на основе локальных эвристик, она может ошибаться. Ничего не загружается: всё работает в вашем браузере.",short:"Введите не менее 40 слов.",wait:"Анализ…",sN:"Подозрительно гладкая текстура",sB:"Однообразный ритм предложений",sP:"Типичные для ИИ обороты",sU:"Однородные абзацы",sI:"Неформальные человеческие черты",sD:"Типичные для ИИ размеры",sM:"Подпись ИИ в метаданных",sC:"Есть данные камеры",sT:"Очень короткий ролик",err:"Не удалось прочитать файл."},
+zh:{n:"中文",sub:"检测 AI 生成的文本、图片和视频，无论由哪个 AI 生成",t:"文本",i:"图片",v:"视频",ph:"粘贴要检测的文本（至少 80 个字）…",drop:"将文件拖到此处，或点击选择",go:"分析",cl:"清除",lab:"是 AI 的概率",H:"很可能是人类创作",U:"无法确定",A:"很可能由 AI 生成",ds:"这是基于本地启发式方法的估算，可能出错。不会上传任何内容：一切都在浏览器中运行。",short:"请至少输入 80 个字。",wait:"分析中…",sN:"纹理异常平滑",sB:"句子节奏过于均匀",sP:"典型的 AI 措辞",sU:"段落过于均匀",sI:"非正式的人类特征",sD:"典型的 AI 尺寸",sM:"元数据中的 AI 标识",sC:"存在相机数据",sT:"片段很短",err:"无法读取该文件。"},
+ja:{n:"日本語",sub:"AIが作成したテキスト・画像・動画を、どのAIでも検出します",t:"テキスト",i:"画像",v:"動画",ph:"チェックしたい文章を貼り付けてください（80文字以上）…",drop:"ここにファイルをドロップ、またはタップして選択",go:"分析",cl:"クリア",lab:"AIである確率",H:"人間が作成した可能性が高い",U:"判定不能",A:"AI生成の可能性が高い",ds:"ローカルのヒューリスティックによる推定であり、誤る場合があります。何もアップロードされず、すべてブラウザ内で処理されます。",short:"80文字以上入力してください。",wait:"分析中…",sN:"不自然に滑らかなテクスチャ",sB:"文のリズムが均一",sP:"AIに典型的な言い回し",sU:"段落が均一",sI:"人間らしいくだけた特徴",sD:"AIに典型的なサイズ",sM:"メタデータにAIの署名",sC:"カメラ情報あり",sT:"非常に短いクリップ",err:"ファイルを読み込めませんでした。"},
+ko:{n:"한국어",sub:"어떤 AI가 만들었든 AI로 만든 텍스트, 이미지, 영상을 탐지합니다",t:"텍스트",i:"이미지",v:"영상",ph:"검사할 텍스트를 붙여넣으세요(40단어 이상)…",drop:"파일을 여기에 놓거나 눌러서 선택",go:"분석",cl:"지우기",lab:"AI일 확률",H:"사람이 만들었을 가능성 높음",U:"판단 불가",A:"AI 생성 가능성 높음",ds:"로컬 휴리스틱 기반 추정치이며 틀릴 수 있습니다. 아무것도 업로드되지 않으며 모두 브라우저에서 실행됩니다.",short:"40단어 이상 입력하세요.",wait:"분석 중…",sN:"부자연스럽게 매끈한 질감",sB:"균일한 문장 리듬",sP:"전형적인 AI 표현",sU:"균일한 문단",sI:"사람다운 비격식 특징",sD:"전형적인 AI 크기",sM:"메타데이터의 AI 서명",sC:"카메라 데이터 있음",sT:"매우 짧은 클립",err:"파일을 읽을 수 없습니다."}
+};
+const $=s=>document.querySelector(s),cl=(x,a=0,b=1)=>Math.min(b,Math.max(a,x)),avg=a=>a.reduce((s,x)=>s+x,0)/(a.length||1),sd=a=>{const m=avg(a);return Math.sqrt(avg(a.map(x=>(x-m)**2)))};
+let lang=(navigator.language||"es").slice(0,2),mode="t",file=null,last=null;
+if(!L[lang])lang="en";
+const PH=new RegExp(["delve","tapestry","testament to","it(?:’|')s (?:important|worth) (?:to note|noting)","in conclusion","furthermore","moreover","in today(?:’|')s","navigate the","plays? an? (?:crucial|vital|pivotal) role","as an ai","en conclusión","cabe destacar","es importante (?:destacar|señalar|mencionar)","en el mundo actual","en resumen","desempeña un papel","como modelo de lenguaje","em conclusão","é importante (?:destacar|ressaltar)","além disso","no mundo atual","il est important de (?:noter|souligner)","en outre","joue un rôle","dans le monde actuel","zusammenfassend","es ist wichtig","darüber hinaus","spielt eine (?:entscheidende|wichtige) rolle","in der heutigen","in conclusione","è importante (?:notare|sottolineare)","svolge un ruolo","nel mondo di oggi","в заключение","важно отметить","кроме того","играет ключевую роль","в современном мире","总之","综上所述","值得注意的是","此外","扮演着","在当今","結論として","重要なのは","役割を果たし","결론적으로","중요한 점은","중요한 역할"].join("|"),"gi");
+const INF=/\b(lol|haha+|jaja+|jeje+|xd|wtf|omg|tbh|idk)\b|\.{3}|!{2,}|\?{2,}|[\u{1F300}-\u{1FAFF}]/giu;
+
+function ui(){
+ const t=L[lang];document.documentElement.lang=lang;
+ $("#sub").textContent=t.sub;$("#tx").placeholder=t.ph;$("#dt").textContent=t.drop;$("#go").textContent=t.go;$("#cl").textContent=t.cl;$("#lab").textContent=t.lab;$("#ds").textContent=t.ds;
+ document.querySelectorAll(".tabs button").forEach(b=>{b.textContent=t[b.dataset.m];b.setAttribute("aria-selected",b.dataset.m===mode)});
+ if(last)show(last);
+}
+$("#lg").innerHTML=Object.keys(L).map(k=>`<option value="${k}">${L[k].n}</option>`).join("");
+$("#lg").value=lang;
+$("#lg").onchange=e=>{lang=e.target.value;ui()};
+const MODES={t:"t",i:"i",v:"v"};
+document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>{mode=MODES[b.dataset.m];file=null;last=null;$("#res").hidden=true;$("#pv").innerHTML="";$("#fi").value="";$("#fi").accept=mode==="i"?"image/*":"video/*";$("#tx").hidden=mode!=="t";$("#dz").hidden=mode==="t";ui()});
+$("#cl").onclick=()=>{$("#tx").value="";file=null;last=null;$("#pv").innerHTML="";$("#fi").value="";$("#res").hidden=true};
+function pick(f){if(!f)return;file=f;const u=URL.createObjectURL(f);$("#pv").innerHTML=mode==="i"?`<img src="${u}" alt="">`:`<video src="${u}" muted controls></video>`}
+$("#fi").onchange=e=>pick(e.target.files[0]);
+const dz=$("#dz");
+dz.ondragover=e=>{e.preventDefault();dz.classList.add("over")};dz.ondragleave=()=>dz.classList.remove("over");
+dz.ondrop=e=>{e.preventDefault();dz.classList.remove("over");pick(e.dataTransfer.files[0])};
+
+function aText(t){
+ const cjk=((t.match(/[\u3040-\u30ff\u4e00-\u9fff]/g)||[]).length)>t.length*.3;
+ const ss=t.split(/[.!?。！？\n]+/).map(s=>s.trim()).filter(s=>s.length>2);
+ const len=s=>cjk?s.length/2:s.split(/\s+/).filter(Boolean).length;
+ const n=cjk?t.length/2:t.split(/\s+/).filter(Boolean).length;
+ if(n<40)return null;
+ const ls=ss.map(len),cv=sd(ls)/(avg(ls)||1);
+ const sB=cl((.62-cv)/.35);
+ const ph=(t.match(PH)||[]).length,dash=(t.match(/—|\*\*|^#+ |^\s*[-*•] /gm)||[]).length;
+ const sP=cl((ph*4+dash*1.5)/Math.max(ss.length,1));
+ const ps=t.split(/\n\s*\n/).map(x=>x.trim()).filter(Boolean).map(len);
+ const sU=ps.length>=3?cl((.5-sd(ps)/avg(ps))/.4):0;
+ const sI=cl((t.match(INF)||[]).length/(n/80));
+ const p=15+95*(.45*sB+.35*sP+.2*sU)-35*sI;
+ return{p,s:[["sB",sB],["sP",sP],["sU",sU],["sI",sI,1]]};
+}
+async function scan(f){
+ const rd=async b=>new TextDecoder("latin1").decode(await b.arrayBuffer());
+ const s=await rd(f.slice(0,1500000))+await rd(f.slice(Math.max(0,f.size-1500000)));
+ return{ai:/c2pa|trainedAlgorithmicMedia|midjourney|dall-?e|stable.?diffusion|synthid|\bsora\b|\bveo\b|runwayml|kling|firefly|openai|comfyui|imagen|made with google ai|gemini/i.test(s),cam:/Exif[\s\S]{0,600}(Canon|NIKON|SONY|Apple|SAMSUNG|FUJIFILM|OLYMPUS|Panasonic|Xiaomi|HUAWEI|OnePlus|motorola|Pixel)|com\.apple\.quicktime|GoPro|DJI/i.test(s)};
+}
+function noise(src,w,h){
+ const k=Math.min(1,640/Math.max(w,h)),W=Math.max(8,Math.round(w*k)),H=Math.max(8,Math.round(h*k));
+ const c=document.createElement("canvas");c.width=W;c.height=H;const x=c.getContext("2d",{willReadFrequently:true});x.drawImage(src,0,0,W,H);
+ const d=x.getImageData(0,0,W,H).data,g=new Float32Array(W*H);
+ for(let i=0;i<W*H;i++)g[i]=.299*d[i*4]+.587*d[i*4+1]+.114*d[i*4+2];
+ const o=new Float32Array((W-2)*(H-2));let j=0;
+ for(let y=1;y<H-1;y++)for(let q=1;q<W-1;q++){const i=y*W+q;o[j++]=Math.abs(g[i]-(g[i-1]+g[i+1]+g[i-W]+g[i+W])/4)}
+ o.sort();return o[o.length>>1];
+}
+const dimAI=(w,h)=>w%64===0&&h%64===0&&Math.max(w,h)>=512?1:0;
+async function aImg(f){
+ const m=await scan(f);
+ const im=await new Promise((r,j)=>{const i=new Image();i.onload=()=>r(i);i.onerror=j;i.src=URL.createObjectURL(f)});
+ const sN=cl((1.4-noise(im,im.naturalWidth,im.naturalHeight))/1),sD=dimAI(im.naturalWidth,im.naturalHeight),sC=m.cam?1:0,sM=m.ai?1:0;
+ const p=sM?97:25+50*sN+15*sD-35*sC;
+ return{p,s:[["sM",sM],["sN",sN],["sD",sD],["sC",sC,1]]};
+}
+async function aVid(f){
+ const m=await scan(f),v=document.createElement("video");
+ v.muted=true;v.preload="auto";v.src=URL.createObjectURL(f);
+ await new Promise((r,j)=>{v.onloadedmetadata=r;v.onerror=j});
+ const dur=v.duration||0,ns=[];
+ for(let i=0;i<6;i++){
+  await new Promise(r=>{const o=()=>{v.removeEventListener("seeked",o);r()};v.addEventListener("seeked",o);v.currentTime=dur*(i+.5)/6;setTimeout(r,4000)});
+  ns.push(noise(v,v.videoWidth,v.videoHeight));
+ }
+ const sN=cl((1.4-avg(ns))/1),sT=dur<=10?1:dur<=15?.5:0,sD=dimAI(v.videoWidth,v.videoHeight),sC=m.cam?1:0,sM=m.ai?1:0;
+ const p=sM?97:22+45*sN+15*sT+10*sD-30*sC;
+ return{p,s:[["sM",sM],["sN",sN],["sT",sT],["sD",sD],["sC",sC,1]]};
+}
+function show(r){
+ const t=L[lang],p=Math.round(cl(r.p,3,97));
+ $("#res").hidden=false;$("#pct").textContent=p+"%";
+ const v=p<35?"H":p<65?"U":"A";
+ $("#vd").textContent=t[v];$("#vd").style.color=v==="H"?"var(--ok)":v==="U"?"var(--warn)":"var(--bad)";
+ $("#mk").style.left=p+"%";
+ $("#sg").innerHTML=r.s.filter(x=>x[1]>.1).map(x=>`<li class="${x[2]?"h":""}"><span>${t[x[0]]}</span><i><b style="width:${Math.round(x[1]*100)}%"></b></i></li>`).join("");
+}
+$("#go").onclick=async()=>{
+ const t=L[lang],b=$("#go");let r;
+ try{
+  if(mode==="t"){r=aText($("#tx").value);if(!r){alert(t.short);return}}
+  else{if(!file)return;b.disabled=true;b.textContent=t.wait;r=await(mode==="i"?aImg(file):aVid(file))}
+ }catch(e){alert(t.err);b.disabled=false;b.textContent=t.go;return}
+ b.disabled=false;b.textContent=t.go;last=r;show(r);
+};
+ui();
+</script>
+</body>
+</html>
